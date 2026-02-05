@@ -1,146 +1,146 @@
 # CLAUDE.md
 
-This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+이 파일은 Claude Code(claude.ai/code)가 이 저장소에서 작업할 때 필요한 지침을 제공합니다.
 
-## Development Commands
+## 개발 명령어
 
-### Core Commands
-- `npm run dev` - Start development server (http://localhost:3000)
-- `npm run build` - Build for production
-- `npm start` - Run production build locally
-- `npm run lint` - Run ESLint
+### 핵심 명령어
+- `npm run dev` - 개발 서버 시작 (http://localhost:3000)
+- `npm run build` - 프로덕션 빌드
+- `npm start` - 프로덕션 빌드 로컬 실행
+- `npm run lint` - ESLint 실행
 
-### Adding UI Components
-To add new shadcn/ui components:
+### shadcn/ui 컴포넌트 추가
+새로운 shadcn/ui 컴포넌트를 추가하려면:
 ```bash
-npx shadcn@latest add [component-name]
+npx shadcn@latest add [컴포넌트-이름]
 ```
 
-## Architecture Overview
+## 아키텍처 개요
 
-### Layout System
-The application uses a hierarchical layout structure:
+### 레이아웃 시스템
+애플리케이션은 계층적 레이아웃 구조를 사용합니다:
 
 **RootLayout** (`app/layout.tsx`):
-- Uses `ThemeProvider` (next-themes) for dark mode support
-- Wraps entire app with `Toaster` component for notifications
-- Body uses flex layout: `flex flex-col min-h-screen` (ensures footer sticks to bottom)
-- Font variables (Geist Sans/Mono) injected via CSS custom properties
+- `ThemeProvider`(next-themes)로 다크모드 지원
+- 전체 앱을 `Toaster` 컴포넌트로 감싸서 알림 기능 제공
+- body는 flex 레이아웃 사용: `flex flex-col min-h-screen` (footer를 하단에 고정)
+- Geist Sans/Mono 폰트 변수를 CSS 커스텀 프로퍼티로 주입
 
 **DashboardLayout** (`app/dashboard/layout.tsx`):
-- Uses flex layout: `flex flex-col min-h-screen`
-- Contains Header (sticky), main content area (flex-1), and Footer
-- The `min-h-screen` ensures layout always occupies at least viewport height
+- Flex 레이아웃 사용: `flex flex-col min-h-screen`
+- Header (sticky), main 콘텐츠 영역 (flex-1), Footer 포함
+- `min-h-screen`은 레이아웃이 항상 viewport 높이 이상을 차지하도록 보장
 
-**Key Pattern**: All layout containers should use `flex flex-col min-h-screen` to ensure:
-1. Header stays at top
-2. Main content expands to fill available space
-3. Footer is pushed to bottom
+**핵심 패턴**: 모든 레이아웃 컨테이너는 `flex flex-col min-h-screen`을 사용하여 다음을 보장:
+1. Header가 상단에 유지
+2. 메인 콘텐츠가 사용 가능한 공간을 확장
+3. Footer가 하단에 배치
 
-### Page Structure
-- `/` - Home page (no special layout, standalone Header/Footer)
-- `/dashboard` - Dashboard page (uses DashboardLayout)
-- `/api/example` - Sample API route
+### 페이지 구조
+- `/` - 홈페이지 (특별한 레이아웃 없음, 독립적인 Header/Footer)
+- `/dashboard` - 대시보드 페이지 (DashboardLayout 사용)
+- `/api/example` - 샘플 API 라우트
 
-### Theme System
-- **Provider**: `ThemeProvider` (`components/providers/theme-provider.tsx`) wraps next-themes
-- **Mode**: Uses CSS class approach (`.dark` class on `<html>` element)
-- **Toggle**: `ThemeToggle` component in Header allows light/dark switching
-- **Variables**: All colors defined in `app/globals.css` using OKLch color space (CSS custom properties)
-- **Default**: System preference detection enabled (`enableSystem: true`)
+### 테마 시스템
+- **Provider**: `ThemeProvider` (`components/providers/theme-provider.tsx`)가 next-themes 감싸기
+- **모드**: CSS 클래스 방식 사용 (`<html>` 요소에 `.dark` 클래스)
+- **토글**: Header의 `ThemeToggle` 컴포넌트로 라이트/다크 전환 가능
+- **변수**: 모든 색상은 `app/globals.css`에서 OKLch 색상 공간을 사용하는 CSS 커스텀 프로퍼티로 정의
+- **기본값**: 시스템 설정 감지 활성화 (`enableSystem: true`)
 
-### Component Organization
-- `components/ui/` - shadcn/ui components (don't edit these, regenerate with `npx shadcn@latest add`)
-- `components/layout/` - Header, Footer, ThemeToggle (application-specific layout)
-- `components/providers/` - Context providers (ThemeProvider wrapper)
+### 컴포넌트 구조
+- `components/ui/` - shadcn/ui 컴포넌트 (편집하지 말 것, `npx shadcn@latest add`로 재생성)
+- `components/layout/` - Header, Footer, ThemeToggle (애플리케이션별 레이아웃)
+- `components/providers/` - Context providers (ThemeProvider 래퍼)
 
-### Styling Approach
-- **TailwindCSS v4**: Uses CSS-first approach (no config file needed)
-- **Theme Customization**: Edit CSS variables in `app/globals.css` (`:root` for light, `.dark` for dark mode)
-- **Color Space**: OKLch color format for better perceptual uniformity
-- **Custom Variant**: `@custom-variant dark` defined for dark mode utilities
+### 스타일링 접근
+- **TailwindCSS v4**: CSS 우선 방식 (설정 파일 불필요)
+- **테마 커스터마이징**: `app/globals.css`에서 CSS 변수 편집 (라이트 모드는 `:root`, 다크 모드는 `.dark`)
+- **색상 공간**: 더 나은 인지적 균일성을 위해 OKLch 색상 포맷 사용
+- **커스텀 variant**: 다크 모드 유틸리티를 위해 `@custom-variant dark` 정의
 
-### Utilities & Constants
-- `lib/utils.ts` - Helper functions like `cn()` (clsx + tailwind-merge for className merging)
-- `lib/constants.ts` - Site configuration (name, links) and navigation items
-- `lib/types.ts` - Shared TypeScript types
+### 유틸리티 & 상수
+- `lib/utils.ts` - `cn()` 같은 헬퍼 함수 (clsx + tailwind-merge로 className 병합)
+- `lib/constants.ts` - 사이트 설정 (이름, 링크) 및 네비게이션 항목
+- `lib/types.ts` - 공유되는 TypeScript 타입
 
-### Hooks
-- `hooks/use-mounted.ts` - Prevents hydration mismatch (use for client-only features)
-- `hooks/use-media-query.ts` - Responsive design queries
+### 훅
+- `hooks/use-mounted.ts` - Hydration 불일치 방지 (클라이언트 전용 기능용)
+- `hooks/use-media-query.ts` - 반응형 디자인 쿼리
 
-## Important Implementation Details
+## 중요한 구현 세부사항
 
 ### Hydration
-- `suppressHydrationWarning` on `<html>` element is necessary for theme hydration (next-themes)
-- Use `use-mounted` hook for components that access localStorage or window object
-- Always wrap theme-dependent logic with hydration guards
+- `<html>` 요소의 `suppressHydrationWarning`은 테마 hydration을 위해 필수 (next-themes)
+- localStorage나 window 객체에 접근하는 컴포넌트에는 `use-mounted` 훅 사용
+- 항상 hydration 가드로 테마 의존 로직을 감싸기
 
-### Responsive Design
-- Use TailwindCSS responsive prefixes: `md:` (768px), `lg:` (1024px), etc.
-- Use `use-media-query` hook for JavaScript-based responsive logic
-- Container queries: Not explicitly used, use media queries with `mx-auto max-w-7xl` pattern
+### 반응형 디자인
+- TailwindCSS 반응형 접두사 사용: `md:` (768px), `lg:` (1024px) 등
+- JavaScript 기반 반응형 로직에는 `use-media-query` 훅 사용
+- 컨테이너 쿼리: 명시적으로 사용하지 않음, `mx-auto max-w-7xl` 패턴으로 미디어 쿼리 사용
 
-### State Management
-- No global state library (Redux, Zustand, etc.)
-- Use React Server Components when possible
-- Use local component state for UI-only state
+### 상태 관리
+- 전역 상태 라이브러리 없음 (Redux, Zustand 등)
+- 가능하면 React Server Components 사용
+- UI 전용 상태는 로컬 컴포넌트 상태 사용
 
 ### TypeScript
-- Strict mode enabled
-- Use `as const` for immutable objects (see `lib/constants.ts`)
-- Use `Readonly<>` for readonly props in Server Components
+- 엄격 모드 활성화
+- 불변 객체에 `as const` 사용 (`lib/constants.ts` 참조)
+- Server Components의 읽기 전용 props에 `Readonly<>` 사용
 
-## API Routes
-- Located in `app/api/` directory
-- Use Next.js Route Handlers pattern
-- Sample: `app/api/example/route.ts` (demonstrates GET/POST)
+## API 라우트
+- `app/api/` 디렉토리에 위치
+- Next.js Route Handlers 패턴 사용
+- 샘플: `app/api/example/route.ts` (GET/POST 시연)
 
-## Environment Variables
-- Client-side: Prefix with `NEXT_PUBLIC_` (e.g., `NEXT_PUBLIC_API_URL`)
-- Server-side: Use without prefix
-- File: `.env.local` (gitignored)
+## 환경 변수
+- 클라이언트 측: `NEXT_PUBLIC_` 접두사 붙이기 (예: `NEXT_PUBLIC_API_URL`)
+- 서버 측: 접두사 없이 사용
+- 파일: `.env.local` (gitignore됨)
 
-## Common Tasks
+## 자주 사용하는 작업
 
-### Adding a New Page
-1. Create file in `app/[path]/page.tsx`
-2. If needs layout, create `app/[path]/layout.tsx`
-3. Always import Header/Footer if layout is custom
+### 새 페이지 추가
+1. `app/[경로]/page.tsx`에 파일 생성
+2. 레이아웃이 필요하면 `app/[경로]/layout.tsx` 생성
+3. 커스텀 레이아웃인 경우 항상 Header/Footer import
 
-### Adding a New Component
-1. Place in `components/` directory
-2. Use `"use client"` if it needs interactivity
-3. Prefer Server Components when possible
+### 새 컴포넌트 추가
+1. `components/` 디렉토리에 배치
+2. 상호작용이 필요하면 `"use client"` 사용
+3. 가능하면 Server Components 선호
 
-### Updating Theme Colors
-1. Edit CSS variables in `app/globals.css`
-2. Update both `:root` (light mode) and `.dark` (dark mode)
-3. Use OKLch color space for consistency
+### 테마 색상 업데이트
+1. `app/globals.css`에서 CSS 변수 편집
+2. `:root` (라이트 모드)와 `.dark` (다크 모드) 모두 업데이트
+3. 일관성을 위해 OKLch 색상 공간 사용
 
-### Testing UI Changes
-1. Run `npm run dev`
-2. Toggle dark mode with Sun/Moon button in header
-3. Test responsive design with DevTools
+### UI 변경사항 테스트
+1. `npm run dev` 실행
+2. 헤더의 Sun/Moon 버튼으로 다크모드 토글
+3. DevTools로 반응형 디자인 테스트
 
-## Known Patterns & Constraints
+## 알려진 패턴 & 제약사항
 
-### Fragment Warning
-- DashboardLayout previously used Fragment `<>` which broke flex layout
-- Changed to explicit `<div className="flex flex-col min-h-screen">`
-- Never use Fragment as layout wrapper - use explicit div with flex properties
+### Fragment 경고
+- DashboardLayout은 이전에 Fragment `<>`를 사용했지만 flex 레이아웃을 깨뜨림
+- 명시적 `<div className="flex flex-col min-h-screen">`으로 변경
+- 절대로 Fragment를 레이아웃 래퍼로 사용하지 말 것 - 명시적 div에 flex 속성 사용
 
-### Dark Mode Detection
-- Detects system preference automatically
-- Falls back to saved preference in localStorage
-- Light/dark toggle in header overrides system preference
+### 다크모드 감지
+- 시스템 설정을 자동으로 감지
+- localStorage에 저장된 설정으로 폴백
+- 헤더의 라이트/다크 토글은 시스템 설정 재정의
 
-### Import Paths
-- Use `@/` alias (configured in `tsconfig.json`) for absolute imports
-- Never use relative paths like `../../../components/...`
+### Import 경로
+- `tsconfig.json`에 설정된 `@/` alias 사용 (절대 경로)
+- `../../../components/...` 같은 상대 경로 사용 금지
 
-## Recent Changes
-- **Hydration Fix**: Added ThemeProvider to resolve server/client render mismatch
-- **Dark Mode**: Implemented via next-themes with custom Provider wrapper
-- **Footer Fix**: Changed DashboardLayout from Fragment to flex container with `min-h-screen`
-- **Notification System**: Added Sonner Toaster component for toast notifications
+## 최근 변경사항
+- **Hydration 수정**: 서버/클라이언트 렌더링 불일치 해결을 위해 ThemeProvider 추가
+- **다크모드 구현**: next-themes를 통한 구현 및 커스텀 Provider 래퍼 추가
+- **Footer 수정**: DashboardLayout을 Fragment에서 `min-h-screen`을 가진 flex 컨테이너로 변경
+- **알림 시스템**: Toast 알림을 위해 Sonner Toaster 컴포넌트 추가
